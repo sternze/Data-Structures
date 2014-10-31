@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FibonacciHeap", "FibonacciHeap\FibonacciHeap.csproj", "{F70E4F63-C667-4133-9A4B-3EC0C086CE26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "FibonacciHeap\DataStructures.csproj", "{F70E4F63-C667-4133-9A4B-3EC0C086CE26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FibTreeExample", "FibTreeExample\FibTreeExample.csproj", "{9E6F5C05-6BFF-4155-A4E5-52A079A19BD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsageExamples", "FibTreeExample\UsageExamples.csproj", "{9E6F5C05-6BFF-4155-A4E5-52A079A19BD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
