@@ -21,13 +21,12 @@ namespace FibonacciHeap
         // Flag: Has Dispose already been called? 
         private bool _disposed = false;
 
+        public FibonacciHeap() : this(null)
+        {
+        }
+
         public FibonacciHeap(IFibonacciHeapComparer<T> comparer)
         {
-            if (comparer == null)
-            {
-                throw new ArgumentNullException("comparer", "The comparer may not be null!");
-            }
-
             this._minimumNode = null;
             this._numberOfElements = 0;
             this._rootElements = new HashSet<FibonacciHeapNode<T>>();
@@ -45,14 +44,14 @@ namespace FibonacciHeap
                 throw new ArgumentNullException("nodeToInsert", "The node to be inserted in the Fibonacci Heap may not be null!");
             }
 
-            nodeToInsert.Degree = 0;
-            nodeToInsert.Child = null;
-            nodeToInsert.Marked = false;
+//            nodeToInsert.Degree = 0;
+//            nodeToInsert.Child = null;
+//            nodeToInsert.Marked = false;
 
             InsertInRootElements(nodeToInsert);
             
 
-            this._numberOfElements++;
+            this._numberOfElements += 1 + nodeToInsert.SubNodes;
         }
 
         /// <summary>
@@ -145,19 +144,20 @@ namespace FibonacciHeap
         {
             var min = this._minimumNode;
 
-            if (min == null) return min;
+            if (min == null || (min.Child == null)) return min;
 
 
             // Add all child nodes of the current minimum to the root list.
             var childOfMin = min.Child;
 
-            var currentChild = childOfMin.Right;
+            var currentChild = childOfMin;
 
             do
             {
+                var nextElement = currentChild.Right;
                 InsertInRootElements(currentChild, false);
 
-                currentChild = childOfMin.Right;
+                currentChild = nextElement;
             } while (!currentChild.Equals(childOfMin));
 
             this._rootElements.Remove(min);
@@ -191,9 +191,11 @@ namespace FibonacciHeap
                 aux[i] = null;
             }
 
-            foreach (var rootElem in _rootElements)
+            var numElementsInRootList = _rootElements.Count;
+
+            for (int i = 0; i < numElementsInRootList; i++)
             {
-                var node = rootElem;
+                var node = _rootElements.ElementAt(i);
                 var nodeDegree = node.Degree;
 
                 while (aux[nodeDegree] != null)
@@ -208,9 +210,12 @@ namespace FibonacciHeap
                             node = secondNode;
                             secondNode = tmp;
                             tmp = null;
+                            i--;            // need to decrease i here, because the current element was deleted, from _rootElements, and I want to get the 
+                                            // next element which is now at position i
                         }
 
                         FibHeapLink(secondNode, node);
+                        numElementsInRootList = _rootElements.Count;
                         aux[nodeDegree] = null;
                         nodeDegree++;
                     }
@@ -342,6 +347,48 @@ namespace FibonacciHeap
             // Free any unmanaged objects here. 
             //
             _disposed = true;
+        }
+
+        public override string ToString()
+        {
+            string retVal = "Your Tree is empty.";
+            if (this._minimumNode != null)
+            {
+                var currentElement = this._minimumNode;
+
+                retVal = PrintLineOfNodeAndBelow(currentElement);
+
+            }
+            return retVal;
+        }
+
+        private string PrintLineOfNodeAndBelow(FibonacciHeapNode<T> element)
+        {
+            if (element != null)
+            {
+                string retVal = String.Empty;
+                var currentElement = element;
+
+
+                do
+                {
+                    retVal += currentElement.Element.ToString() + ":" + (currentElement.Parent != null
+                        ? currentElement.Parent.Element.ToString()
+                        : "");
+
+                    retVal += "\n";
+                    retVal += PrintLineOfNodeAndBelow(currentElement.Child);
+
+                    retVal += "\n\n";
+                    currentElement = currentElement.Right;
+                } while (!currentElement.Equals(element));
+
+                return retVal;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ namespace FibonacciHeap
         private FibonacciHeapNode<T> _right;
         private int _degree;
         private bool _marked;
+        private int _subNodes;
 
         public FibonacciHeapNode(T element)
         {
@@ -31,6 +32,7 @@ namespace FibonacciHeap
             this._right = this;
             this._degree = 0;
             this._marked = false;
+            this._subNodes = 0;
         }
 
         public FibonacciHeapNode<T> Parent
@@ -75,6 +77,12 @@ namespace FibonacciHeap
             set { _element = value; }
         }
 
+        public int SubNodes
+        {
+            get { return _subNodes; }
+            set { _subNodes = value; }
+        }
+
         /// <summary>
         /// Adds a child to the current node.
         /// 
@@ -83,13 +91,26 @@ namespace FibonacciHeap
         /// <param name="nodeToAdd">The node which should be added.</param>
         public void AddChild(FibonacciHeapNode<T> nodeToAdd)
         {
-            nodeToAdd.Left = this.Child;
-            nodeToAdd.Right = this.Child.Right;
+            if (this.Child != null)
+            {
+                nodeToAdd.Left = this.Child;
+                nodeToAdd.Right = this.Child.Right;
 
-            nodeToAdd.Right.Left = nodeToAdd;
-            this.Child.Right = nodeToAdd;
+                nodeToAdd.Right.Left = nodeToAdd;
+                this.Child.Right = nodeToAdd;
+
+            }
+            else
+            {
+                this.Child = nodeToAdd;
+                nodeToAdd.Left = this.Child;
+                nodeToAdd.Right = this.Child;
+            }
+
+            nodeToAdd.Parent = this;
 
             this._degree++;
+            this.SubNodes += 1 + nodeToAdd.SubNodes;
         }
 
         /// <summary>
@@ -112,7 +133,7 @@ namespace FibonacciHeap
             nodeToRemove.Left = nodeToRemove;
             nodeToRemove.Right = nodeToRemove;
 
-
+            this.SubNodes -= (1 + nodeToRemove.SubNodes);
             this._degree--;
         }
     }
